@@ -1,90 +1,79 @@
-# 🧼 Image Toolbox — Metadata Cleaner + AI Upsizer
+# 🧼 Image Toolbox
 
-A free, private, **100% client-side** image toolbox with two tools:
+A collection of **free, 100% client-side** image tools. Everything runs in your
+browser — your images are **never uploaded**, there are no limits, no sign-up,
+and nothing for anyone to leak. Installable as an app and works offline.
 
-1. **Clean metadata** — strip EXIF, XMP, IPTC, color profiles, C2PA "Content
-   Credentials", and the text chunks where AI tools (Stable Diffusion, DALL·E,
-   Midjourney) hide generation parameters and "Made with AI" labels.
-2. **Upsize images** — enlarge 2× or 4× using an ESRGAN AI super-resolution
-   model (or instant fast mode).
+**Live:** https://goodermine.github.io/toolbox/
 
-It's an open alternative to sites like aimetadatacleaner.com — but because **all
-the work happens in your browser**, there are no uploads, no daily limits, no
-sign-up, and nothing for anyone to leak. The AI model is bundled with the site,
-so upsizing works even offline after first load.
+## Tools
 
-## Why this is better than the site you were using
+| Tool | Page | What it does |
+|------|------|--------------|
+| 🧼 **Clean metadata** | `/` (Clean tab) | Strip EXIF, GPS, XMP, IPTC, C2PA, and the text chunks where AI tools hide generation data — losslessly. |
+| 🔍 **Upscale** | `/` (Upsize tab) | Enlarge 2×/4× with an ESRGAN AI super-resolution model, or instant Fast mode. Before/after compare slider. |
+| ✂️ **Remove background** | `/background/` | Cut out the subject with a U²-Net model, output a transparent PNG. |
+| 🖼️ **HEIC → JPG** | `/heic/` | Convert iPhone HEIC/HEIF photos to JPG or PNG. |
+| 🗜️ **Compress & convert** | `/compress/` | Shrink file size and convert between JPG/PNG/WebP, with optional resize. |
+| 🔎 **Metadata viewer** | `/metadata/` | See hidden EXIF/GPS/text data and detect AI-provenance signals (C2PA, tool names, IPTC tags). |
 
-| | Typical online cleaner | This tool |
-|---|---|---|
-| Where images go | Uploaded to their server | Never leave your device |
-| Daily limit | ~3 images (free tier) | Unlimited |
-| Cost | Paywalled | Free |
-| Quality | Often re-compressed | Lossless by default |
-| Privacy | Trust required | Verifiable (watch the Network tab) |
+All tools support **drag-and-drop, batch processing, and ZIP download**, and are
+private by design — open your browser's Network tab and you'll see nothing
+uploaded.
 
-## Features
+## Project structure
 
-- **Drag & drop** any number of images at once.
-- **Lossless mode** (default): deletes only metadata segments and keeps your
-  pixel data byte-for-byte — no quality loss.
-  - **JPEG** — removes EXIF, XMP, IPTC/Photoshop, JPEG comments, and C2PA/JUMBF.
-    Keeps the JFIF header and (optionally) the ICC color profile.
-  - **PNG** — removes `tEXt`/`zTXt`/`iTXt` (AI parameters), `eXIf`, `tIME`, etc.
-  - **WebP** — removes `EXIF`/`XMP` chunks and clears the matching `VP8X` flags.
-- **Deep clean mode**: re-encodes the image via `<canvas>` to guarantee removal
-  of anything unusual (also handles GIF/BMP/other formats).
-- **Download all** as a `.zip` (built in plain JS — no dependencies).
-- Shows you exactly **what was removed** from each file.
+```
+index.html            Home: Clean + Upsize tabs, tools grid
+app.js                Metadata cleaner
+upscale.js            AI/Fast upscaler (+ tab switching)
+shared.js             Shared helpers (window.ImgUtil) + service-worker registration
+styles.css            All styling
+sw.js                 Service worker (offline / installable PWA)
+manifest.webmanifest  PWA manifest
+sitemap.xml, robots.txt, og-image.png, icon-*.png
 
-### Upsizer
+heic/       compress/   metadata/   background/   → each: index.html + its <tool>.js
+vendor/     Third-party libraries + AI models (vendored, see vendor/README.md)
+.github/workflows/deploy-pages.yml   Auto-deploy to GitHub Pages
+```
 
-- **AI mode** — ESRGAN super-resolution via [UpscalerJS](https://upscalerjs.com/)
-  on [TensorFlow.js](https://www.tensorflow.org/js), reconstructing real detail
-  rather than just stretching. Models are vendored in `/vendor` (loaded locally,
-  never from a CDN), so it's private and works offline after first load. The
-  library + model load lazily, only when you first use the Upsize tab.
-- **Fast mode** — high-quality canvas (bicubic) scaling. Instant, works on any
-  device, no download.
-- **2× and 4×**, batch processing, progress bars, PNG output, and `.zip` download.
+Each tool page is standalone (its own SEO metadata) and reuses `styles.css` and
+`shared.js`.
+
+## Third-party libraries (all vendored, permissively licensed)
+
+| Library | Used by | License |
+|---------|---------|---------|
+| [TensorFlow.js](https://www.tensorflow.org/js) + [UpscalerJS](https://upscalerjs.com/) + ESRGAN model | Upscaler | Apache-2.0 / MIT |
+| [ONNX Runtime Web](https://onnxruntime.ai/) + U²-Net model | Background remover | MIT / Apache-2.0 |
+| [heic2any](https://github.com/alexcorvi/heic2any) | HEIC converter | MIT |
+| [browser-image-compression](https://github.com/Donaldcwl/browser-image-compression) | Compress | MIT |
+| [exifr](https://github.com/MikeKovarik/exifr) | Metadata viewer | MIT |
+
+Everything is loaded from `/vendor` (never a CDN), so the tools stay private and
+work offline after first use. See [`vendor/README.md`](vendor/README.md).
 
 ## Run it locally
 
-It's three static files, so any web server works:
+Static files — any web server works:
 
 ```bash
-# Python
-python3 -m http.server 8000
-# then open http://localhost:8000
-
-# …or Node
-npx serve .
+python3 -m http.server 8000   # then open http://localhost:8000
+# or: npx serve .
 ```
 
-> Opening `index.html` directly via `file://` mostly works, but a local server
-> avoids browser security quirks with some APIs.
+> A local server (rather than opening `index.html` via `file://`) avoids browser
+> security quirks with workers and the service worker.
 
-## Host it for free
+## Deploy
 
-Pick any static host — there's no backend:
-
-- **GitHub Pages:** push this repo, then enable Pages (Settings → Pages →
-  deploy from branch). Your site goes live at `https://<user>.github.io/<repo>/`.
-- **Netlify / Vercel / Cloudflare Pages:** "import repository" and deploy with
-  the default settings (no build command, publish the repo root).
-
-## How metadata removal works
-
-Image files are containers made of segments/chunks. Metadata lives in specific,
-labeled segments. This tool parses the container, copies the structural and
-pixel data through unchanged, and drops the segments known to carry metadata.
-Because we never touch the compressed image data, the result is visually
-identical to the original — just without the hidden information.
-
-For formats we don't parse natively, or when you tick **Deep clean**, the image
-is drawn onto an HTML canvas and re-exported; the canvas API does not carry
-metadata across, so the output is clean by construction.
+No backend, so any static host works. This repo auto-deploys to **GitHub Pages**
+via `.github/workflows/deploy-pages.yml` on every push to the default branch
+(set Settings → Pages → Source: GitHub Actions once). Netlify / Vercel /
+Cloudflare Pages also work with default settings (no build, publish the root).
 
 ## License
 
-Use it however you like.
+[MIT](LICENSE) © goodermine. Vendored libraries and models retain their own
+licenses (see the table above and `vendor/README.md`).

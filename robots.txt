@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://goodermine.github.io/toolbox/sitemap.xml
