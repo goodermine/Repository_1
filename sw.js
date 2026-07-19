@@ -14,6 +14,7 @@ const SHELL = [
   "./compress/", "./compress/compress.js",
   "./metadata/", "./metadata/metadata.js",
   "./background/", "./background/background.js",
+  "./qr/", "./qr/qr.js",
   "./og-image.png", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png",
 ];
 

@@ -138,6 +138,51 @@ main { max-width: 960px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 32px) 64px;
 .meta-list dt { color: var(--text-dim); font-weight: 600; overflow-wrap: anywhere; }
 .meta-list dt.sensitive { color: var(--warn); }
 .meta-list dd { margin: 0; overflow-wrap: anywhere; }
+
+/* QR generator */
+.qr-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 28px; align-items: start; }
+@media (max-width: 720px) { .qr-layout { grid-template-columns: 1fr; } }
+.qr-form { display: flex; flex-direction: column; gap: 14px; }
+.qr-form[hidden], .qr-actions[hidden] { display: none; }
+.field { display: flex; flex-direction: column; gap: 6px; text-align: left; }
+.field > span { font-size: 0.85rem; color: var(--text-dim); font-weight: 600; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.qr-input input, .qr-input textarea {
+  width: 100%;
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.qr-input textarea { resize: vertical; min-height: 90px; }
+.qr-input input:focus, .qr-input textarea:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.2);
+}
+.qr-input code { background: var(--bg-soft); padding: 1px 5px; border-radius: 5px; font-size: 0.85em; }
+
+.qr-output { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.qr-frame {
+  background: #fff; border-radius: var(--radius); padding: 20px;
+  width: 100%; max-width: 340px; aspect-ratio: 1; display: flex;
+  align-items: center; justify-content: center; box-shadow: var(--shadow);
+}
+.qr-frame canvas { width: 100%; height: auto; display: block; }
+.qr-placeholder { text-align: center; color: #8a94a6; }
+.qr-placeholder p { margin: 8px 0 0; font-size: 0.9rem; }
+.qr-actions { display: flex; gap: 10px; width: 100%; max-width: 340px; }
+.qr-actions .btn { flex: 1; }
+.qr-data { width: 100%; max-width: 340px; }
+.qr-data summary { cursor: pointer; color: var(--text-dim); font-size: 0.85rem; }
+.qr-data pre {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px; margin: 8px 0 0; font-size: 0.8rem; color: var(--text-dim);
+  white-space: pre-wrap; word-break: break-word; max-height: 160px; overflow: auto;
+}
 .callout {
   max-width: 620px;
   margin: 16px auto 0;

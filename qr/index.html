@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free QR Code Generator — private, in your browser | Image Toolbox</title>
+  <meta name="description" content="Create QR codes for URLs, text, and contacts (vCard), free. 100% in your browser — nothing is uploaded. Download as PNG, no limits." />
+  <link rel="canonical" href="https://goodermine.github.io/toolbox/qr/" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔳</text></svg>" />
+  <link rel="manifest" href="../manifest.webmanifest" />
+  <meta name="theme-color" content="#0d1117" />
+  <link rel="apple-touch-icon" href="../icon-192.png" />
+  <link rel="stylesheet" href="../styles.css" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Image Toolbox" />
+  <meta property="og:title" content="Free QR Code Generator — private, in your browser" />
+  <meta property="og:description" content="Create QR codes for URLs, text, and contacts, 100% in your browser. Nothing uploaded." />
+  <meta property="og:url" content="https://goodermine.github.io/toolbox/qr/" />
+  <meta property="og:image" content="https://goodermine.github.io/toolbox/og-image.png" />
+  <meta property="og:image:width" content="1280" />
+  <meta property="og:image:height" content="640" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://goodermine.github.io/toolbox/og-image.png" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <a href="../" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px;">
+        <span class="logo">🧼</span>
+        <span class="brand-name">Image Toolbox</span>
+      </a>
+    </div>
+    <nav>
+      <a href="../">All tools</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/goodermine/toolbox" rel="noopener">Source</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="hero">
+        <h1>QR code generator</h1>
+        <p class="subtitle">
+          Make QR codes for a <strong>link, text, or contact card</strong>. Generated
+          <strong>in your browser</strong> — nothing is uploaded to any server. Free, no limits.
+        </p>
+
+        <div class="tabs" role="tablist" aria-label="QR type">
+          <button class="tab active" data-type="url" role="tab" aria-selected="true">🔗 URL</button>
+          <button class="tab" data-type="text" role="tab" aria-selected="false">💬 Text</button>
+          <button class="tab" data-type="contact" role="tab" aria-selected="false">👤 Contact</button>
+        </div>
+      </div>
+
+      <div class="qr-layout">
+        <!-- Inputs -->
+        <div class="qr-input">
+          <div class="qr-form" id="form-url">
+            <label class="field">
+              <span>Website URL</span>
+              <input type="url" id="urlInput" placeholder="example.com or https://example.com" autocomplete="off" />
+            </label>
+            <p class="hint">No <code>http://</code>? We'll add <code>https://</code> automatically.</p>
+          </div>
+
+          <div class="qr-form" id="form-text" hidden>
+            <label class="field">
+              <span>Text content</span>
+              <textarea id="textInput" rows="5" placeholder="Enter any text to turn into a QR code…"></textarea>
+            </label>
+          </div>
+
+          <div class="qr-form" id="form-contact" hidden>
+            <div class="field-row">
+              <label class="field"><span>First name</span><input type="text" id="cFirst" placeholder="John" /></label>
+              <label class="field"><span>Last name</span><input type="text" id="cLast" placeholder="Doe" /></label>
+            </div>
+            <label class="field"><span>Phone</span><input type="tel" id="cPhone" placeholder="+1 555 123 4567" /></label>
+            <label class="field"><span>Email</span><input type="email" id="cEmail" placeholder="john@example.com" /></label>
+            <label class="field"><span>Organization</span><input type="text" id="cOrg" placeholder="Company" /></label>
+            <label class="field"><span>Website</span><input type="url" id="cUrl" placeholder="https://example.com" /></label>
+          </div>
+
+          <button id="clearBtn" class="btn btn-ghost" style="margin-top:14px;">Clear all fields</button>
+        </div>
+
+        <!-- Output -->
+        <div class="qr-output">
+          <div class="qr-frame" id="qrFrame">
+            <div class="qr-placeholder" id="qrPlaceholder">
+              <div class="dz-icon">🔳</div>
+              <p>Fill in the form to generate your QR code</p>
+            </div>
+            <canvas id="qrCanvas" hidden></canvas>
+          </div>
+          <div class="qr-actions" id="qrActions" hidden>
+            <button id="downloadBtn" class="btn btn-primary">⬇ Download PNG</button>
+            <button id="copyBtn" class="btn btn-ghost">Copy data</button>
+          </div>
+          <details id="dataPreview" class="qr-data" hidden>
+            <summary>QR data</summary>
+            <pre id="dataText"></pre>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="info">
+      <h2>FAQ</h2>
+      <details open>
+        <summary>Is my data uploaded?</summary>
+        <p>No. The QR code is generated entirely on your device with the open-source <a href="https://github.com/soldair/node-qrcode" rel="noopener">node-qrcode</a> library — nothing is sent to any server. (Many online QR tools quietly send your link to their servers; this one doesn't.)</p>
+      </details>
+      <details>
+        <summary>What's a "Contact" QR?</summary>
+        <p>It encodes a <strong>vCard</strong> — when someone scans it, their phone offers to save your name, phone, email, organization, and website straight into Contacts.</p>
+      </details>
+      <details>
+        <summary>Where can I use the QR code?</summary>
+        <p>Anywhere — download the PNG and put it on a poster, business card, slide, or website. There's no tracking and the code never expires (it points directly at your link/text, not through a redirect).</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Runs entirely in your browser · Your data stays on your device · <a href="../">More free tools</a></p>
+  </footer>
+
+  <script src="../shared.js"></script>
+  <script src="../vendor/qrcode.min.js"></script>
+  <script src="qr.js"></script>
+</body>
+</html>
